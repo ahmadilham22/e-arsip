@@ -1,0 +1,4 @@
+.dataTables_paginate .paginate_button.page-item:not(.disabled) a {
+    background-color: #28a745; /* Ganti dengan warna yang Anda inginkan */
+    border-color: #28a745;
+}
