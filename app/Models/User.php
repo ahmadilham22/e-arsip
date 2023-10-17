@@ -4,13 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -19,10 +20,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
         'npm',
-        'role'
+        'role',
+        'angkatan',
+        'password',
     ];
 
     /**
@@ -52,6 +53,6 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return auth()->user()->role === 'admin'; // Misalnya, periksa apakah peran pengguna adalah 'admin'
+        return auth()->user()->role === 'admin';
     }
 }

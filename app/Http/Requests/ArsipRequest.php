@@ -23,13 +23,33 @@ class ArsipRequest extends FormRequest
     {
         return [
             'judul' => 'required|string',
+            'user_id' => 'required',
             'ruang' => 'required|string',
             'jenis_laporan' => 'required',
             'dosen_pembimbing_1' => 'required',
             'dosen_pembimbing_2' => 'required',
             'dosen_penguji' => 'required',
-            'dokumen' => 'required|file|mimes:pdf',
-            'tgl_seminar' => 'required'
+            'dokumen' => 'required|file|mimes:pdf|max:5120',
+            'tgl_seminar' => 'required',
+            'berita_acara' => 'file|mimes:pdf',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'judul.required' => 'Judul harus diisi',
+            'ruang.required' => 'Ruang harus diisi',
+            'user_id.required' => 'Pemilik harus diisi',
+            'jenis_laporan.required' => 'Jenis laporan harus diisi',
+            'dosen_pembimbing_1.required' => 'Dosen pembimbing 1 harus diisi',
+            'dosen_pembimbing_2.required' => 'Dosen pembimbing 2 harus diisi',
+            'dosen_penguji.required' => 'Dosen pembahas harus diisi',
+            'dokumen.required' => 'Dokumen harus diisi',
+            'dokumen.mimes' => 'Dokumen harus merupakan file berekstensi .pdf',
+            'dokumen.max' => 'Dokumen harus berukuran tidak lebih dari 5 Mb',
+            'berita_acara.mimes' => 'Dokumen harus merupakan file berekstensi .pdf',
+            'tgl_seminar.required' => 'Tanggal seminar harus diisi',
         ];
     }
 }

@@ -29,6 +29,11 @@
 
 <body>
     <div class="hold-transition login-page">
+        {{-- @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif --}}
         {{-- @if ($errors->any())
             <div class="error">
                 <ul>
@@ -39,8 +44,9 @@
             </div>
         @endif --}}
         <div class="login-box" style="z-index: 1">
+            {{-- <h2>Sistem Informasi E-Arsip</h2> --}}
             <div class="login-logo">
-                <a href=""><b>Teknik Informatika - Universitas Lampung</b></a>
+                <a href=""><b>Sistem Informasi E-Arsip <br>Teknik Informatika - Universitas Lampung</b></a>
             </div>
             <!-- /.login-logo -->
             <div class="card">
@@ -85,24 +91,44 @@
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
-    <script>
-        @if (session('success'))
+    @if (session('success'))
+        <script>
             Swal.fire({
                 icon: 'success',
                 title: 'Sampai Jumpa',
                 text: '{{ session('success') }}',
-                showConfirmButton: true, // Menyembunyikan tombol OK
-                timer: 3000, // Menetapkan waktu (dalam milidetik) sebelum SweetAlert otomatis menghilang
+                showConfirmButton: true,
+                timer: 3000,
             });
-        @endif
-    </script>
+        </script>
+    @endif
+    @if (session('failed'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: '{{ session('failed') }}',
+                showConfirmButton: true,
+                timer: 3000,
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: '{{ session('error') }}',
+                showConfirmButton: true,
+                timer: 3000,
+            });
+        </script>
+    @endif
     @if ($errors->any())
         <script>
             Swal.fire({
-                title: 'Login Gagal',
-                text: '{{ $errors->first() }}',
                 icon: 'error',
-                confirmButtonText: 'Tutup'
+                title: '{{ $errors->first() }}',
+                showConfirmButton: true,
+                timer: 3000,
             });
         </script>
     @endif

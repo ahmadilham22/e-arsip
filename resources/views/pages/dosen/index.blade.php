@@ -1,31 +1,26 @@
 @extends('layouts.app')
 
 @section('title')
-    Data Mahasiswa
+    Data Dosen
 @endsection
 
 @section('content')
     <div class="container-fluid">
-        @if (session('success'))
+        {{-- @if (session('success'))
             <div class="alert alert-primary text-center" role="alert">
-                {{-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button> --}}
                 {{ session('success') }}
             </div>
         @endif
         @if (session('delete'))
             <div class="alert alert-danger text-center" role="alert">
-                {{-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button> --}}
                 {{ session('delete') }}
             </div>
-        @endif
+        @endif --}}
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('dosen.create') }}" class="btn btn-success mb-3 p-2"> <i
-                                class="fa fa-user m-2"></i>
+                        <a href="{{ route('dosen.create') }}" class="btn btn-success mb-3 p-2"> <i class="fa fa-user m-2"></i>
                             <span>Tambah
                                 Data</span></a>
                         <div class="table-responsive">
@@ -54,13 +49,13 @@
         var i = 1;
         $(document).ready(function() {
             $('#myTable').DataTable({
+                processing: true,
+                responsive: true,
                 serverSide: true,
                 ajax: "{{ route('dosen.list') }}",
                 columns: [{
-                        data: null,
-                        render: function(data, type, row) {
-                            return i++;
-                        },
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
                     },
                     {
                         data: 'name',
@@ -78,11 +73,38 @@
             });
         });
     </script>
-    <script>
+    {{-- <script>
         window.setTimeout(function() {
             $(".alert").fadeTo(500, 0).slideUp(500, function() {
                 $(this).remove();
             });
         }, 3000);
+    </script> --}}
+    <script>
+        @if (session('delete'))
+            Swal.fire({
+                icon: 'success',
+                title: '{{ session('delete') }}',
+                showConfirmButton: true,
+                timer: 3000,
+            });
+        @elseif (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: '{{ session('success') }}',
+                showConfirmButton: true,
+                timer: 3000,
+            });
+        @endif
+    </script>
+    <script>
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: '{{ $errors->first() }}',
+                showConfirmButton: true,
+                timer: 5000,
+            });
+        @endif
     </script>
 @endpush

@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TemplateUser;
+use App\Http\Requests\ExcelRequest;
+use App\Http\Requests\UpdateUser;
 use App\Models\User;
+use App\Models\Arsip;
+use App\Imports\UserImport;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Requests\UserRequest;
-use App\Imports\UserImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
@@ -25,7 +29,7 @@ class UserController extends Controller
                     function ($user) {
                         return view('components.userAction', compact('user'));
                     }
-                )->make();
+                )->addIndexColumn()->make();
         }
 
         return view('pages.user.index');
@@ -44,18 +48,10 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-
-        // $validator = $request->validated();
-
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator->errors());
-        // }
-
-
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
         User::create($data);
-        return redirect()->route('user.list')->with('success', 'Berhasil Menambahkan Data');
+        return redirect()->route('user.list')->with('success', 'Berhasil menambahkan data');
     }
 
     /**
@@ -82,7 +78,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request, string $id)
+    public function update(UpdateUser $request, string $id)
     {
         $data = $request->all();
         $user = User::findOrFail($id);
@@ -93,7 +89,7 @@ class UserController extends Controller
         }
         $user->update($data);
 
-        return redirect()->route('user.list')->with('success', 'Berhasil Mengedit Data');
+        return redirect()->route('user.list')->with('success', 'Berhasil mengedit data');
     }
 
     /**
@@ -107,14 +103,29 @@ class UserController extends Controller
         return redirect()->back()->with('delete', 'Berhasil Menghapus data');
     }
 
-    public function import(Request $request)
+    public function import(ExcelRequest $request)
     {
         $data = $request->file('fileExcel');
         $namaFile = $data->getClientOriginalName();
         $data->move('dokumen/dataMahasiswa', $namaFile);
 
-        Excel::import(new UserImport, public_path('/dokumen/DataMahasiswa/' . $namaFile));
+        try {
+            Excel::import(new UserImport, public_path('/dokumen/DataMahasiswa/' . $namaFile));
+            return redirect()->back()->with('success', 'Data berhasil diimpor.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
 
-        return redirect()->back();
+    public function contoh()
+    {
+        $query = User::all();
+
+        return view('pages.user.template', ['users' => $query]);
+    }
+
+    public function templateExcel()
+    {
+        return Excel::download(new TemplateUser, 'template_user.xlsx');
     }
 }

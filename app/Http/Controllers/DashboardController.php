@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Arsip;
 use App\Models\Dosen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -14,19 +16,39 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $jumlahMahasiswa = User::all()->count();
         $jumlahArsip = Arsip::all()->count();
         $jumlahDosen = Dosen::all()->count();
 
         $user = User::all();
-        $arsip = Arsip::with(['user'])->latest('created_at')->take(7)->get();
+        $arsip = Arsip::with(['user' => function ($query) {
+            $query->withTrashed();
+        }])->where('status_arsip', 1)->latest('created_at')->take(7)->get();
         return view('pages.dashboard.index', [
-            'JumlahUsers' => $jumlahMahasiswa,
             'JumlahArsip' => $jumlahArsip,
             'JumlahDosen' => $jumlahDosen,
             'arsip' => $arsip,
             'user' => $user
         ]);
+    }
+
+    public function ars()
+    {
+        $data = Arsip::with(['user'])->get();
+        return view('pages.dashboard.arsipauth', [
+            'data' => $data
+        ]);
+    }
+
+    public function myArsip()
+    {
+        $userId = Auth::id();
+
+        $arsips = Arsip::where('user_id', $userId)->get();
+        $data = Arsip::with(['user' => function ($query) {
+            $query->withTrashed();
+        }])->latest('created_at')->get();
+        $user = User::all();
+        return view('pages.arsip.myArsip', compact('user', 'data', 'arsips'));
     }
 
     /**
@@ -66,7 +88,10 @@ class DashboardController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $arsip = Arsip::findOrFail($id);
+        $arsip->update(['status_arsip' => 1]);
+
+        return redirect()->route('dahboard.arsip')->with('success', 'Berhasil menampilkan arsip di halaman arsip');
     }
 
     /**

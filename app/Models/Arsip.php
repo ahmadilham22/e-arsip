@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Arsip extends Model
 {
@@ -21,6 +22,8 @@ class Arsip extends Model
         'dosen_penguji',
         'dokumen',
         'tgl_seminar',
+        'berita_acara',
+        'status_arsip'
     ];
 
     public function user()

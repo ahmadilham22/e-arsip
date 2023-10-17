@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DosenRequest;
 use App\Models\Dosen;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -17,6 +18,7 @@ class DosenController extends Controller
             $query = Dosen::all();
 
             return DataTables::of($query)
+                ->addIndexColumn()
                 ->addColumn('action', 'components.dosenAction')
                 ->make();
         }
@@ -35,7 +37,7 @@ class DosenController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DosenRequest $request)
     {
         $data = $request->all();
         Dosen::create($data);
@@ -64,7 +66,7 @@ class DosenController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(DosenRequest $request, string $id)
     {
         $data = $request->all();
         $dosen = Dosen::findOrFail($id);

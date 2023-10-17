@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('arrow')
+    <a href="{{ back()->getTargetUrl() }}" class="text-dark"><i class="fa fa-arrow-left fa-2x" aria-hidden="true"></i></a>
+@endsection
+
 @section('title')
     Pengaturan Akun
 @endsection

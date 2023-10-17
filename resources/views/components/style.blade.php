@@ -30,3 +30,6 @@
 <link rel="stylesheet" href="{{ asset('assets/style.css') }}">
 <link rel="icon" href="{{ asset('assets/image/Logo_UnivLampung.png') }}">
 <link rel="stylesheet" href="{{ asset('vendor/sweetalert/sweetalert.css') }}">
+
+<!-- DataTables Responsive CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">

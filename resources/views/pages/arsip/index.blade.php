@@ -1,30 +1,60 @@
 @extends('layouts.app')
 
+@section('arrow')
+    <a href="javascript:history.back()" class="text-dark">
+        <i class="fa fa-arrow-left fa-2x" aria-hidden="true"></i>
+    </a>
+@endsection
+
 @section('title')
     Data Arsip
 @endsection
 
 @section('content')
     <div class="container-fluid">
-        @if (session('success'))
-            <div class="alert alert-primary text-center" role="alert">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if (session('delete'))
-            <div class="alert alert-danger text-center" role="alert">
-                {{ session('delete') }}
-            </div>
-        @endif
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('arsip.create') }}" class="btn btn-success mb-3 p-2"> <i
-                                class="fa fa-user m-2"></i>
-                            <span>Tambah
-                                Data</span></a>
+                        <div class="d-flex">
+                            <a href="{{ route('arsip.create') }}" class="btn btn-success mb-3 p-2"> <i
+                                    class="fa fa-user m-2"></i>
+                                <span>Tambah
+                                    Data</span></a>
+                            @if (Auth::user()->role == 'admin')
+                                <form action="{{ route('arsip.export') }}" method="POST" class="ml-3">
+                                    @csrf
+                                    <button class="btn btn-success mb-3 p-2"> <i class="fa fa-user m-2" type="submit"></i>
+                                        <span>Download
+                                            Data</span></button>
+                                </form>
+                            @endif
+                        </div>
                         <div class="table-responsive">
+                            <div class="d-flex">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="tahunFilter">Tahun</label>
+                                        <select class="form-control" id="tahunFilter">
+                                            <option value="">Tampilkan Semua</option>
+                                            @foreach ($years as $year)
+                                                <option value="{{ $year }}">{{ $year }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="angkatanFilter">Angkatan:</label>
+                                        <select class="form-control" id="angkatanFilter">
+                                            <option value="">Tampilkan Semua</option>
+                                            @foreach ($generations as $generation)
+                                                <option value="{{ $generation }}">{{ $generation }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <table id="myTable" class="table table-stripped w-100">
                                 <thead class="justify-content-center">
                                     <tr>
@@ -32,10 +62,8 @@
                                         <th style="max-width: 450px">Judul</th>
                                         <th>Ruang</th>
                                         <th>Jenis Laporan</th>
-                                        {{-- <th>Dosen Pembimbing 1</th>
-                                        <th>Dosen Pembimbing 2</th>
-                                        <th>Dosen Penguji</th> --}}
                                         <th>Pemilik</th>
+                                        <th>Angkatan</th>
                                         <th>Tanggal Seminar</th>
                                         <th class="text-center" style="width: 100px">Action</th>
                                     </tr>
@@ -53,18 +81,40 @@
 
 @push('addon-script')
     <script>
-        var i = 1;
+        $('#tahunFilter').on('change', function() {
+            // var url = 'https://e8ec-103-87-230-45.ngrok-free.app/arsip?tahun=' + tahun;
+            var tahun = $(this).val();
+
+            // $('#myTable').DataTable().ajax.url(url).load();
+            $('#myTable').DataTable().ajax.url('{{ route('arsip.list') }}?tahun=' + tahun).load();
+        });
+        $('#angkatanFilter').on('change', function() {
+            // var url = 'https://e8ec-103-87-230-45.ngrok-free.app/arsip?angkatan=' + angkatan;
+            var angkatan = $(this).val();
+
+            // $('#myTable').DataTable().ajax.url(url).load();
+            $('#myTable').DataTable().ajax.url('{{ route('arsip.list') }}?angkatan=' + angkatan).load();
+        });
         $(document).ready(function() {
             $('#myTable').DataTable({
+                responsive: true,
+                processing: true,
+                autoWidth: true,
                 serverSide: true,
-                ajax: "{{ route('arsip.list') }}",
+                ajax: {
+                    // url: 'https://e8ec-103-87-230-45.ngrok-free.app/arsips',
+                    url: '{{ route('arsip.list') }}',
+                    data: function(d) {
+                        d.tahun = $('#tahunFilter').val();
+                        d.angkatan = $('#angkatanFilter').val();
+                    }
+                },
                 columns: [{
-                        data: null,
-                        render: function(data, type, row) {
-                            return i++;
-                        },
-                    },
-                    {
+                        data: 'index',
+                        name: 'index',
+                        orderable: false,
+                        searchable: false,
+                    }, {
                         data: 'judul',
                         name: 'judul'
                     },
@@ -81,29 +131,43 @@
                         name: 'user.name'
                     },
                     {
+                        data: 'user.angkatan',
+                        data: 'user.angkatan',
+                    },
+                    {
                         data: 'tgl_seminar',
-                        name: 'tanggal seminar'
+                        name: 'tanggal seminar',
+                        render: function(data) {
+                            return moment(data).format('DD-MM-YYYY');
+                        }
                     },
                     {
                         data: 'action',
                         name: 'action'
                     }
-                ],
-                error: function(xhr, error, thrown) {
-                    if (xhr.status === 419) {
-                        // Lifesession habis, berikan tindakan yang sesuai
-                        alert("Sesi Anda telah habis. Silakan login kembali.");
-                        // Atau alihkan pengguna ke halaman login, dsb.
-                    }
-                },
+                ]
+            });
+            $('#angkatanFilter').on('change', function() {
+                table.draw(); // Memanggil metode draw untuk memperbarui tabel saat filter angkatan berubah
             });
         });
     </script>
+    <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script>
-        window.setTimeout(function() {
-            $(".alert").fadeTo(500, 0).slideUp(500, function() {
-                $(this).remove();
+        @if (session('delete'))
+            Swal.fire({
+                icon: 'success',
+                title: '{{ session('delete') }}',
+                showConfirmButton: true,
+                timer: 3000,
             });
-        }, 3000);
+        @elseif (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: '{{ session('success') }}',
+                showConfirmButton: true,
+                timer: 3000,
+            });
+        @endif
     </script>
 @endpush

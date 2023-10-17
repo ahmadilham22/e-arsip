@@ -3,10 +3,12 @@
 namespace App\Imports;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class UserImport implements ToModel
+class UserImport implements ToModel, WithStartRow
 {
     /**
      * @param array $row
@@ -15,10 +17,19 @@ class UserImport implements ToModel
      */
     public function model(array $row)
     {
+
+        Log::debug('Importing data:', $row);
+
         return new User([
-            'name' => $row[1],
+            'name' => ucwords(strtolower($row[1])),
             'npm' => $row[2],
-            'password' => Hash::make($row[5])
+            'angkatan' => $row[3],
+            'password' => Hash::make($row[4])
         ]);
+    }
+
+    public function startRow(): int
+    {
+        return 2; // Mulai dari baris kedua (abaikan baris pertama)
     }
 }

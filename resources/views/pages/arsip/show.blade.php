@@ -1,15 +1,21 @@
 @extends('layouts.app')
 
+@section('arrow')
+    <a href="javascript:history.back()" class="text-dark">
+        <i class="fa fa-arrow-left fa-2x" aria-hidden="true"></i>
+    </a>
+@endsection
+
 @section('title')
     Data arsip
 @endsection
 
 
 @section('content')
-    <div class="row mt-5">
+    <div class="row mt-5 w-100">
         <div class="container-fluid">
             <div class="col-md-12">
-                <div class="card h-100">
+                <div class="card h-100 w-100">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-5">
@@ -86,6 +92,20 @@
                                             </div>
                                             <div class="col-sm-9">
                                                 {{ $arsip->tgl_seminar }}
+                                            </div>
+                                        </div>
+                                        <hr>
+
+                                        <div class="d-flex justify-content-between">
+                                            <div class="col-sm-3">
+                                                <strong>Berita Acara</strong>
+                                            </div>
+                                            <div class="col-sm-9">
+                                                @if ($arsip->berita_acara)
+                                                    Ada
+                                                @else
+                                                    Tidak Ada
+                                                @endif
                                             </div>
                                         </div>
                                     </div>

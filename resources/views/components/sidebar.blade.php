@@ -42,7 +42,8 @@
                  <!-- Add icons to the links using the .nav-icon class
                        with font-awesome or any other icon font library -->
                  <li class="nav-item">
-                     <a href="{{ route('dashboard') }}" class="nav-link {{ request()->is('/') ? 'active' : '' }}">
+                     <a href="{{ route('dashboard') }}"
+                         class="nav-link navbar-brand {{ request()->is('/') ? 'active' : '' }}">
                          <i class="nav-icon fas fa-tachometer-alt"></i>
                          <p>
                              Dashboard
@@ -73,17 +74,17 @@
                  @if (Auth::user()->role == 'admin')
                      <li class="nav-item mt-2">
                          <a href="{{ route('user.list') }}"
-                             class="nav-link {{ request()->is('user*') ? 'active' : '' }}">
+                             class="nav-link navbar-brand {{ request()->is('user*') ? 'active' : '' }}">
                              <i class="nav-icon fas fa-users"></i>
                              <p>
-                                 Mahasiswa
+                                 Users
                                  {{-- <span class="right badge badge-danger">New</span> --}}
                              </p>
                          </a>
                      </li>
                      <li class="nav-item mt-2">
                          <a href="{{ route('dosen.list') }}"
-                             class="nav-link {{ request()->is('dosen*') ? 'active' : '' }}">
+                             class="nav-link navbar-brand {{ request()->is('dosen*') ? 'active' : '' }}">
                              <i class="nav-icon fas fa-users"></i>
                              <p>
                                  Dosen
@@ -93,7 +94,8 @@
                      </li>
                  @endif
                  <li class="nav-item mt-2">
-                     <a href="{{ route('arsip.list') }}" class="nav-link {{ request()->is('arsip*') ? 'active' : '' }}">
+                     <a href="{{ route('arsip.tahun') }}"
+                         class="nav-link navbar-brand {{ request()->is('arsip*') ? 'active' : '' }}">
                          <i class="nav-icon fa fa-book"></i>
                          <p>
                              Arsip

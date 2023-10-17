@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Arsip Teknik Informatika</title>
 
     @include('components.style')
@@ -32,8 +33,11 @@
             <!-- Content Header (Page header) -->
             <div class="content-header">
                 <div class="container-fluid">
-                    <div class="row mb-2 mt-2">
+                    <div class="row">
                         <div class="col-sm-6">
+                            <div class="col-md-3 mb-3">
+                                @yield('arrow')
+                            </div>
                             <h1 class="m-0">@yield('title')</h1>
                         </div><!-- /.col -->
                         {{-- <div class="col-sm-6">

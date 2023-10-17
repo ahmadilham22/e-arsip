@@ -26,19 +26,22 @@ class UserRequest extends FormRequest
             'name' => 'required|string',
             'npm' => 'required|string',
             'role' => 'nullable|string|in:mahasiswa,admin',
+            'angkatan' => 'numeric',
+            'password' => 'string|min:8',
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'Nama Harus Diisi',
-            'email.required' => 'Email Harus Diisi',
-            'email.email' => 'Format email salah',
-            'email.unique' => 'Email sudah ada',
-            'password.required' => 'Password Harus Diisi',
+            'name.required' => 'Nama harus diisi',
+            'npm.required' => 'NPM harus diisi',
+            'password.required' => 'Password harus diisi',
+            'angkatan.required' => 'Angkatan harus diisi',
+            'angkatan.numeric' => 'Angkatan harus dalam bentuk angka atau tahun',
             'password.min' => 'Password harus lebih dari 8 karakter',
             'password.regex' => 'Password harus terdiri dari satu huruf besar, satu huruf kecil, dan satu angka',
+            'fileExcel.mimes' => 'Data harus berekstensi .xlsx atau .xls'
         ];
     }
 }
